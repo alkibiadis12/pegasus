@@ -1,25 +1,17 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  getDiscounts,
-  getPricing,
-  getAvailability,
-  getRoutes,
-  getPorts,
-} from '../api/pegasusApi';
+import { getRoutes, getPorts } from '../api/pegasusApi';
 import { Container } from '@mui/system';
-import { Typography, Box } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import AutoCompletePort from '../components/Page1/AutoCompletePort';
 import AutoCompleteRoutes from '../components/Page1/AutoCompleteRoutes';
 import DatePickerCustom from '../components/Page1/DatePickerCustom';
-import { BoxFlexSB, BoxCenter } from '../components/styledReusableComponents';
+import { BoxFlexSB } from '../components/styledReusableComponents';
 import CardsWithRoutes from '../components/Page1/CardsWithRoutes';
 import { useBoundStore } from '../store/store';
 import SmallDate from '../components/Page1/SmallDate';
 import PricingPopUp from '../components/Page1/PricingPopUp';
 import ClickedOutsideOfCard from '../components/Page1/ClickedOutsideOfCard';
 import ErrorMessage from '../components/ErrorMessage';
+import LoadingMessage from '../components/LoadingMessage';
 
 function Page1(props) {
   const selectedPort = useBoundStore(state => state.selectedPort);
@@ -40,11 +32,7 @@ function Page1(props) {
   let cardsWithRoutes;
   let pricingPopUp;
   if (routes.isLoading || ports.isLoading) {
-    menus = (
-      <BoxCenter>
-        <CircularProgress />
-      </BoxCenter>
-    );
+    menus = <LoadingMessage />;
   }
   if (routes.isError) {
     menus = <ErrorMessage message={routes.error.message} />;

@@ -8,12 +8,12 @@ import {
 } from '../../api/pegasusApi';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { Typography, CircularProgress, Box } from '@mui/material';
+import { Typography } from '@mui/material';
 import { BoxCenter, BoxGap } from '../styledReusableComponents';
 import { useBoundStore } from '../../store/store';
 import dayjs from 'dayjs';
 import ErrorMessage from '../ErrorMessage';
-import { v4 as uuidv4 } from 'uuid';
+import LoadingMessage from '../LoadingMessage';
 
 function CounterPeople(props) {
   const selectedDate = useBoundStore(state => state.selectedDate);
@@ -111,11 +111,7 @@ function CounterPeople(props) {
 
   let content;
   if (ages.isLoading || availability.isLoading || discounts.isLoading) {
-    content = (
-      <BoxCenter>
-        <CircularProgress />
-      </BoxCenter>
-    );
+    content = <LoadingMessage />;
   }
 
   if (ages.isError) {

@@ -1,23 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  getDiscounts,
-  getPricing,
-  getAvailability,
-  getRouteAnalysis,
-  getRoutes,
-  getPorts,
-} from '../../api/pegasusApi';
+import { getRouteAnalysis } from '../../api/pegasusApi';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Card, Typography, Link } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { BoxCenter, BlackLayer, BoxGap } from '../styledReusableComponents';
 import { useBoundStore } from '../../store/store';
-import { useLanguageStore } from '../../store/translateStore';
+import { useTranslateStore } from '../../store/translateStore';
 import { styled } from '@mui/system';
 import { colors } from '../colors';
 import SailingIcon from '@mui/icons-material/Sailing';
+import LoadingMessage from '../LoadingMessage';
+import ErrorMessage from '../ErrorMessage';
 
 //STYLES
 const CustomCard = styled(Card, {
@@ -87,7 +81,7 @@ function CardsWithRoutes() {
     eksantlimenaEishthria,
     timh,
     elikse,
-  } = useLanguageStore(state => state.cardsWithRoutes);
+  } = useTranslateStore(state => state.cardsWithRoutes);
 
   const postRouteAnalysisObj = {
     cruise_id,
@@ -132,26 +126,10 @@ function CardsWithRoutes() {
 
   let content;
   if (routeAnalysis.isLoading) {
-    content = (
-      <BoxCenter>
-        <CircularProgress />
-      </BoxCenter>
-    );
+    content = <LoadingMessage />;
   }
   if (routeAnalysis.isError) {
-    content = (
-      <BoxCenter sx={{ flexDirection: 'column' }}>
-        <Typography variant="body1">Oops!</Typography>
-        <p>
-          <Typography variant="body1">
-            Sorry, an unexpected error has occured.
-          </Typography>
-        </p>
-        <p>
-          <Typography variant="h6">{routeAnalysis.error.message}</Typography>
-        </p>
-      </BoxCenter>
-    );
+    content = <ErrorMessage message={routeAnalysis.error.message} />;
   }
   if (routeAnalysis.isSuccess) {
     content = routeAnalysis.data.map(el => {

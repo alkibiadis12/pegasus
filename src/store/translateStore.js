@@ -21,4 +21,4 @@ store = persist(store, {
   }),
 });
 
-export const useLanguageStore = create(store);
+export const useTranslateStore = create(store);

@@ -5,7 +5,7 @@ import { useBoundStore } from '../../store/store';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Typography } from '@mui/material';
-import { useLanguageStore } from '../../store/translateStore';
+import { useTranslateStore } from '../../store/translateStore';
 import { styled } from '@mui/system';
 
 //CUSTOM COMPONENTS
@@ -25,7 +25,7 @@ const BoxOuterContainer = styled('div')(({ theme }) => ({
 function SmallDate(props) {
   const selectedDate = useBoundStore(state => state.selectedDate);
   const setSelectedDate = useBoundStore(state => state.setSelectedDate);
-  const { epilegmenhHmeromhnia } = useLanguageStore(state => state.smallDate);
+  const { epilegmenhHmeromhnia } = useTranslateStore(state => state.smallDate);
   const displayedDate = dayjs(selectedDate).format('DD/MM/YYYY');
 
   const dayMinusOne = () => {

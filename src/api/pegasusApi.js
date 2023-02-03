@@ -9,6 +9,11 @@ export const getPorts = async () => {
   return response.data;
 };
 
+export const getCountries = async () => {
+  const response = await pegasusApi.get('/countries');
+  return response.data;
+};
+
 export const getRoutes = async () => {
   const response = await pegasusApi.get('/routes');
   return response.data;
