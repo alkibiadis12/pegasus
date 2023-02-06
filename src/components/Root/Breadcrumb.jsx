@@ -5,19 +5,24 @@ import { styled } from '@mui/system';
 import { Typography } from '@mui/material';
 import { colors } from '../colors';
 
-const LinkRouterCustom = styled(Link)(({ location, to }) => ({
+const LinkRouterCustom = styled(Link)(({ location, normalpath, to }) => ({
   textDecoration: 'none',
+  cursor: `${to === '#' ? 'auto' : 'pointer'}`,
   ':link': {
-    color: `${location === to ? colors.blue_light : colors.yellow}`,
+    color: `${location === normalpath ? colors.blue_light : colors.yellow}`,
   },
   ':visited': {
-    color: `${location === to ? colors.blue_light : colors.yellow}`,
+    color: `${location === normalpath ? colors.blue_light : colors.yellow}`,
   },
   ':hover': {
-    color: `${location === to ? colors.blue_light2 : colors.yellow_light}`,
+    color: `${
+      location === normalpath ? colors.blue_light2 : colors.yellow_light
+    }`,
   },
   ':active': {
-    color: `${location === to ? colors.blue_light2 : colors.yellow_light}`,
+    color: `${
+      location === normalpath ? colors.blue_light2 : colors.yellow_light
+    }`,
   },
 }));
 
@@ -28,15 +33,25 @@ function Breadcrumb() {
       gap="20px"
       sx={{ backgroundColor: colors.dark_gray, padding: '10px 50px' }}
     >
-      <LinkRouterCustom to={'/'} location={location}>
+      <LinkRouterCustom to={'/'} location={location} normalpath={'/'}>
         <Typography variant="h6">Επιλογή Εκδρομής</Typography>
       </LinkRouterCustom>
       <ChevronRightIcon sx={{ fontSize: '30px', color: colors.dark_gray2 }} />
-      <LinkRouterCustom to={'/stoixeia-epivatwn'} location={location}>
+      {/* to={'/stoixeia-epivatwn'} */}
+      <LinkRouterCustom
+        to={'#'}
+        location={location}
+        normalpath={'/stoixeia-epivatwn'}
+      >
         <Typography variant="h6">Στοιχεία Επιβατών</Typography>
       </LinkRouterCustom>
       <ChevronRightIcon sx={{ fontSize: '30px', color: colors.dark_gray2 }} />
-      <LinkRouterCustom to={'/ekdosh-eisithriwn'} location={location}>
+      {/* to={'/ekdosh-eisithriwn'} */}
+      <LinkRouterCustom
+        to={'#'}
+        location={location}
+        normalpath={'/ekdosh-eisithriwn'}
+      >
         <Typography variant="h6">Έκδοση Εισιτηρίων</Typography>
       </LinkRouterCustom>
     </BoxCenter>

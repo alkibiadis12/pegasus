@@ -1,11 +1,5 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getDiscounts,
-  getPricing,
-  getAvailability,
-  getAges,
-} from '../../api/pegasusApi';
+import { getDiscounts, getAvailability, getAges } from '../../api/pegasusApi';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { Typography } from '@mui/material';
@@ -14,10 +8,17 @@ import { useBoundStore } from '../../store/store';
 import dayjs from 'dayjs';
 import ErrorMessage from '../ErrorMessage';
 import LoadingMessage from '../LoadingMessage';
+import { colors } from '../colors';
+import { useEffect } from 'react';
 
-function CounterPeople(props) {
+function CounterPeople() {
   const selectedDate = useBoundStore(state => state.selectedDate);
   const selectedCard = useBoundStore(state => state.selectedCard);
+  const selectedPeople = useBoundStore(state => state.selectedPeople);
+  const setSelectedPeople = useBoundStore(state => state.setSelectedPeople);
+  const setSelectedPeoplePrice = useBoundStore(
+    state => state.setSelectedPeoplePrice
+  );
 
   const postAvailabilityObj = {
     cruise_id: selectedCard.cruise_id * 1,
@@ -39,75 +40,8 @@ function CounterPeople(props) {
   const discounts = useQuery({
     queryKey: ['discounts', postDiscountsObj],
     queryFn: () => getDiscounts(postDiscountsObj),
-    enabled: !!selectedCard?.cruise_id,
+    enabled: !!ages,
   });
-
-  const [peopleCounter, setPeopleCounter] = useState({
-    adults: 0,
-    children: 0,
-    infants: 0,
-  });
-
-  const minusPerson = typeOfPerson => {
-    switch (typeOfPerson) {
-      case 'AD':
-        if (peopleCounter.adults !== 0) {
-          setPeopleCounter(prevPeopleCounter => {
-            return {
-              ...prevPeopleCounter,
-              adults: prevPeopleCounter.adults - 1,
-            };
-          });
-        }
-        return;
-      case 'CH':
-        if (peopleCounter.children !== 0) {
-          setPeopleCounter(prevPeopleCounter => {
-            return {
-              ...prevPeopleCounter,
-              children: prevPeopleCounter.children - 1,
-            };
-          });
-        }
-        return;
-      case 'IN':
-        if (peopleCounter.infants !== 0) {
-          setPeopleCounter(prevPeopleCounter => {
-            return {
-              ...prevPeopleCounter,
-              infants: prevPeopleCounter.infants - 1,
-            };
-          });
-        }
-        return;
-    }
-  };
-
-  const plusPerson = typeOfPerson => {
-    switch (typeOfPerson) {
-      case 'AD':
-        setPeopleCounter(prevPeopleCounter => {
-          return { ...prevPeopleCounter, adults: prevPeopleCounter.adults + 1 };
-        });
-        return;
-      case 'CH':
-        setPeopleCounter(prevPeopleCounter => {
-          return {
-            ...prevPeopleCounter,
-            children: prevPeopleCounter.children + 1,
-          };
-        });
-        return;
-      case 'IN':
-        setPeopleCounter(prevPeopleCounter => {
-          return {
-            ...prevPeopleCounter,
-            infants: prevPeopleCounter.infants + 1,
-          };
-        });
-        return;
-    }
-  };
 
   let content;
   if (ages.isLoading || availability.isLoading || discounts.isLoading) {
@@ -125,12 +59,22 @@ function CounterPeople(props) {
   }
 
   if (ages.isSuccess && availability.isSuccess && discounts.isSuccess) {
-    // console.log(ages.data);
-    // console.log(availability.data);
-    console.log(discounts.data);
-    content = ages.data.map((a, index) => {
+    setSelectedPeoplePrice({
+      typeOfPerson: 'AD',
+      newPrice: Math.round((discounts.data[0].price * 100) / 100).toFixed(2),
+    });
+    setSelectedPeoplePrice({
+      typeOfPerson: 'CH',
+      newPrice: Math.round((discounts.data[1].price * 100) / 100).toFixed(2),
+    });
+    setSelectedPeoplePrice({
+      typeOfPerson: 'IN',
+      newPrice: Math.round((discounts.data[2].price * 100) / 100).toFixed(2),
+    });
+
+    content = ages.data.map(a => {
       return (
-        <BoxCenter flexDirection="column" key={`PassengerType${index}`}>
+        <BoxCenter flexDirection="column" gap="5px" key={JSON.stringify(a)}>
           <Typography variant="subtitle1">
             {a.passengerType === 'AD'
               ? 'Adults'
@@ -138,22 +82,54 @@ function CounterPeople(props) {
               ? 'Children'
               : 'Infants'}
           </Typography>
-          <BoxCenter gap="10px">
-            <RemoveIcon onClick={() => minusPerson(a.passengerType)} />
-            {a.passengerType === 'AD'
-              ? peopleCounter.adults
-              : a.passengerType === 'CH'
-              ? peopleCounter.children
-              : peopleCounter.infants}
-            <AddIcon onClick={() => plusPerson(a.passengerType)} />
+          <BoxCenter
+            gap="20px"
+            sx={{
+              backgroundColor: '#fff',
+              padding: '5px 10px',
+              border: `1px solid ${colors.yellow}`,
+            }}
+          >
+            <RemoveIcon
+              sx={{ cursor: 'pointer' }}
+              onClick={() =>
+                setSelectedPeople({ typeOfPerson: a.passengerType, by: -1 })
+              }
+            />
+
+            <Typography variant="h5">
+              {a.passengerType === 'AD'
+                ? selectedPeople.adults
+                : a.passengerType === 'CH'
+                ? selectedPeople.children
+                : selectedPeople.infants}
+            </Typography>
+            <AddIcon
+              sx={{ cursor: 'pointer' }}
+              onClick={() =>
+                setSelectedPeople({ typeOfPerson: a.passengerType, by: 1 })
+              }
+            />
           </BoxCenter>
-          <Typography variant="subtitle1">€ 38.00</Typography>
+          <Typography variant="subtitle1">
+            {a.passengerType === 'AD'
+              ? `€${Math.round((discounts.data[0].price * 100) / 100).toFixed(
+                  2
+                )}`
+              : a.passengerType === 'CH'
+              ? `€${Math.round((discounts.data[1].price * 100) / 100).toFixed(
+                  2
+                )}`
+              : `€${Math.round((discounts.data[2].price * 100) / 100).toFixed(
+                  2
+                )}`}
+          </Typography>
         </BoxCenter>
       );
     });
   }
 
-  return <BoxGap gap="30px">{content}</BoxGap>;
+  return <BoxGap gap="80px">{content}</BoxGap>;
 }
 
 export default CounterPeople;

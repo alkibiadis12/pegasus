@@ -5,8 +5,11 @@ import { colors } from '../components/colors';
 import { BoxSBnoBP } from '../components/styledReusableComponents';
 import Breadcrumb from '../components/Root/Breadcrumb';
 import { Outlet } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import CardInPage2 from '../components/Root/CardInPage2';
 
-function Root(props) {
+function Root() {
+  const location = useLocation();
   return (
     <div>
       <CssBaseline />
@@ -14,6 +17,7 @@ function Root(props) {
         <Flags />
       </BoxSBnoBP>
       <LogoContainer />
+      {location.pathname === '/stoixeia-epivatwn' && <CardInPage2 />}
       <Breadcrumb />
       <Box sx={{ marginTop: '30px' }}>
         <Outlet />

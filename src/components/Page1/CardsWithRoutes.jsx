@@ -68,6 +68,7 @@ function CardsWithRoutes() {
   const displayedDate = dayjs(selectedDate).format('DD/MM/YYYY');
   const selectedCard = useBoundStore(state => state.selectedCard);
   const setSelectedCard = useBoundStore(state => state.setSelectedCard);
+  const resetSelectedPeople = useBoundStore(state => state.resetSelectedPeople);
 
   const {
     apo,
@@ -107,6 +108,7 @@ function CardsWithRoutes() {
     //If the card is already selected we diselect it
     if (isThisCardSelected) {
       setSelectedCard(null);
+      resetSelectedPeople();
       return;
     }
 
@@ -151,7 +153,7 @@ function CardsWithRoutes() {
 
       return (
         <BoxCenter
-          key={uuidv4()}
+          key={JSON.stringify(el)}
           onClick={() =>
             clickHandler(
               arrivalTime,
@@ -171,13 +173,20 @@ function CardsWithRoutes() {
           >
             <BlackLayer>
               <BoxPadding>
-                <Grid container rowSpacing={2.5}>
-                  <Grid xs={12} md={8}>
+                <Grid container rowSpacing={3} alignItems="center">
+                  <Grid xs={12} md={6}>
                     <TypographyZindex variant="h6">
                       {descr.toUpperCase()} {apo} {port.toUpperCase()}
                     </TypographyZindex>
                   </Grid>
-                  <Grid xs={12} md={4}>
+                  <Grid xs={12} md={3}>
+                    {differenceInMinutes < 1 && (
+                      <Typography variant="h6" sx={{ color: colors.yellow }}>
+                        {elikse}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid xs={12} md={3}>
                     <TypographyZindex variant="subtitle2">
                       {monohmerh}
                     </TypographyZindex>
@@ -201,7 +210,7 @@ function CardsWithRoutes() {
                     </TypographyZindex>
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <BoxGap>
+                    <BoxGap gap="7px">
                       <SailingIcon sx={{ color: colors.yellow }} />
                       <TypographyZindex variant="body2">
                         {vessel}

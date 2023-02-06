@@ -22,8 +22,12 @@ function Page1(props) {
   const routes = useQuery(['routes'], getRoutes);
   const ports = useQuery(['ports'], getPorts, {
     select: data =>
-      data.map((port, index) => {
-        return { portId: index, gr: port.DESCR[0], en: port.DESCRFOREIGN[0] };
+      data.map(port => {
+        return {
+          portId: port.PORT[0],
+          gr: port.DESCR[0],
+          en: port.DESCRFOREIGN[0],
+        };
       }),
   });
 

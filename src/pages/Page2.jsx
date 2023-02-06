@@ -1,11 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { string, object, array } from 'yup';
-import { TextField, Typography, Autocomplete, Container } from '@mui/material';
+import {
+  TextField,
+  Typography,
+  Autocomplete,
+  Container,
+  Button,
+} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useQuery } from '@tanstack/react-query';
 import { getCountries } from '../api/pegasusApi';
 import { useTranslateStore } from '../store/translateStore';
+import { useBoundStore } from '../store/store';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -13,37 +19,47 @@ import { useState } from 'react';
 import { languageTypes } from '../store/translateReducer/translateReducer';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingMessage from '../components/LoadingMessage';
+import { schema } from '../schema/page2schema';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { colors } from '../components/colors';
+import { styled } from '@mui/system';
+import CostAnalyzer from '../components/Page2/CostAnalyzer';
 
-const arr = [1, 2, 3];
-
-const formSchema = {
-  firstName: string()
-    .min(2, 'firstname min ')
-    .matches(/^[A-Za-zΑ-Ωα-ω]*$/, `firstname match`)
-    .max(40)
-    .required('Required'),
-  lastName: string()
-    .min(2, 'lastname min ')
-    .matches(/^[A-Za-zΑ-Ωα-ω ]*$/, `lastName match`)
-    .max(40)
-    .required('Required'),
-  email: string().email(`email validation`),
-  nationality: string().required('Required'),
-  dateOfBirth: string().required('Required'),
-  phoneNumber: string().matches(
-    /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/,
-    `phone validation`
-  ),
-};
-
-const schema = object({
-  test: array().of(object().shape(formSchema)),
+const PaymentButton = styled(Button)({
+  padding: '10px 50px',
+  backgroundColor: colors.yellow,
+  color: '#000',
+  ':hover': {
+    backgroundColor: colors.yellow_dark,
+    color: colors.black_light,
+  },
 });
 
+const textFieldStyle = {
+  width: '100%',
+  backgroundColor: colors.light_gray2,
+  color: colors.light_gray1,
+};
+
 export default function Page2() {
+  const { adults, children, infants } = useBoundStore(
+    state => state.selectedPeople
+  );
+  const totalPeople = adults + children + infants;
+  //ARR IS USED TO RENDER INPUTS BASED ON TOTAL PEOPLE
+  let arr = [];
+  for (let i = 0; i < totalPeople; i++) arr.push('');
+  const [value, setValue] = useState(arr);
+
+  const setSelectedUsersInformation = useBoundStore(
+    state => state.setSelectedUsersInformation
+  );
+
   const selectedLanguage = useTranslateStore(state => state.selectedLanguage);
+  //GETTING COUNTRIES DATA
   const countries = useQuery(['countries'], getCountries);
 
+  //USING SCHEMA, HOOK FORMS AND YUP
   const {
     register,
     handleSubmit,
@@ -51,16 +67,18 @@ export default function Page2() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  //SAVE PEOPLE DATA AND NAVIGATE ON SUBMIT
+  const navigate = useNavigate();
   const onSubmit = data => {
-    alert(JSON.stringify(data));
+    console.log(data);
+    if (data?.arrayOfUserInfo.length > 1) {
+      setSelectedUsersInformation(data.arrayOfUserInfo);
+      navigate('/ekdosh-eisithriwn');
+    }
   };
 
-  let temp = [];
-  arr.forEach(_ => {
-    temp.push('');
-  });
-  const [value, setValue] = useState(temp);
-
+  //FOR DATE PICKER
   const handleChange = (newValue, index) => {
     setValue(prev => {
       let newArr = [...prev];
@@ -69,6 +87,7 @@ export default function Page2() {
     });
   };
 
+  //CONDITIONAL RENDERING
   let formsContent;
   if (countries.isLoading) {
     formsContent = <LoadingMessage />;
@@ -77,6 +96,7 @@ export default function Page2() {
     formsContent = <ErrorMessage message={countries.error.message} />;
   }
   if (countries.isSuccess) {
+    //COUNTRIES DATA FILTERED BY SELECTED LANGUAGE
     let countriesData;
     switch (selectedLanguage) {
       case languageTypes.gr:
@@ -107,19 +127,26 @@ export default function Page2() {
     }
 
     formsContent = (
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <>
         {arr.map((_, index) => {
           return (
-            <Grid container spacing={1} key={`field${index}`}>
+            <Grid
+              container
+              rowSpacing={2}
+              columnSpacing={5}
+              key={`field${index}`}
+              sx={{ marginBottom: '30px' }}
+            >
               <Grid item xs={6}>
                 <TextField
                   id="outlined-required"
                   label="Όνομα"
-                  {...register(`test.${index}.firstName`)}
-                  sx={{ width: '100%' }}
+                  {...register(`arrayOfUserInfo.${index}.firstName`)}
+                  sx={textFieldStyle}
+                  required
                 />
-                {errors?.test?.[index]?.firstName?.message && (
-                  <p>{errors?.test?.[index]?.firstName?.message}</p>
+                {errors?.arrayOfUserInfo?.[index]?.firstName?.message && (
+                  <p>{errors?.arrayOfUserInfo?.[index]?.firstName?.message}</p>
                 )}
               </Grid>
 
@@ -127,28 +154,38 @@ export default function Page2() {
                 <TextField
                   id="outlined-required"
                   label="Επώνυμο"
-                  {...register(`test.${index}.lastName`)}
-                  sx={{ width: '100%' }}
+                  {...register(`arrayOfUserInfo.${index}.lastName`)}
+                  sx={textFieldStyle}
+                  required
                 />
-                {errors?.test?.[index]?.lastName?.message && (
-                  <p>{errors?.test?.[index]?.lastName?.message}</p>
+                {errors?.arrayOfUserInfo?.[index]?.lastName?.message && (
+                  <p>{errors?.arrayOfUserInfo?.[index]?.lastName?.message}</p>
                 )}
               </Grid>
 
               <Grid item xs={6}>
                 <Autocomplete
                   disablePortal
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
                   id="combo-box-demo"
                   options={countriesData}
-                  sx={{ width: '100%' }}
+                  sx={textFieldStyle}
                   renderInput={params => (
                     <TextField
                       {...params}
                       label="Εθνικότητα"
-                      {...register(`test.${index}.nationality`)}
+                      required
+                      {...register(`arrayOfUserInfo.${index}.nationality`)}
                     />
                   )}
                 />
+                {errors?.arrayOfUserInfo?.[index]?.nationality?.message && (
+                  <p>
+                    {errors?.arrayOfUserInfo?.[index]?.nationality?.message}
+                  </p>
+                )}
               </Grid>
               <Grid item xs={6}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -160,14 +197,17 @@ export default function Page2() {
                     renderInput={params => (
                       <TextField
                         {...params}
-                        {...register(`test.${index}.dateOfBirth`)}
-                        sx={{ width: '100%' }}
+                        {...register(`arrayOfUserInfo.${index}.dateOfBirth`)}
+                        sx={textFieldStyle}
+                        required
                       />
                     )}
                   />
                 </LocalizationProvider>
-                {errors?.test?.[index]?.nationality?.message && (
-                  <p>{errors?.test?.[index]?.nationality?.message}</p>
+                {errors?.arrayOfUserInfo?.[index]?.dateOfBirth?.message && (
+                  <p>
+                    {errors?.arrayOfUserInfo?.[index]?.dateOfBirth?.message}
+                  </p>
                 )}
               </Grid>
 
@@ -175,44 +215,63 @@ export default function Page2() {
                 <TextField
                   id="outlined-required"
                   label="Email"
-                  {...register(`test.${index}.email`)}
-                  sx={{ width: '100%' }}
+                  {...register(`arrayOfUserInfo.${index}.email`)}
+                  sx={textFieldStyle}
+                  required={index === 0 ? true : false}
                 />
-                {errors?.test?.[index]?.email?.message && (
-                  <p>{errors?.test?.[index]?.email?.message}</p>
+                {errors?.arrayOfUserInfo?.[index]?.email?.message && (
+                  <p>{errors?.arrayOfUserInfo?.[index]?.email?.message}</p>
                 )}
               </Grid>
 
               <Grid item xs={6}>
                 <TextField
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                   id="outlined-required"
                   label="Τηλέφωνο"
-                  {...register(`test.${index}.phoneNumber`)}
-                  sx={{ width: '100%' }}
+                  {...register(`arrayOfUserInfo.${index}.phoneNumber`)}
+                  sx={textFieldStyle}
+                  required={index === 0 ? true : false}
                 />
-                {errors?.test?.[index]?.phoneNumber?.message && (
-                  <p>{errors?.test?.[index]?.phoneNumber?.message}</p>
+                {errors?.arrayOfUserInfo?.[index]?.phoneNumber?.message && (
+                  <p>
+                    {errors?.arrayOfUserInfo?.[index]?.phoneNumber?.message}
+                  </p>
                 )}
               </Grid>
             </Grid>
           );
         })}
-
-        <input type="submit" />
-      </form>
+      </>
     );
   }
 
   return (
     <Container maxWidth="xl">
-      <Grid container spacing={2}>
-        <Grid item xs={7}>
-          {formsContent}
+      {adults < 1 && <Navigate to="/" />}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={1} columnSpacing={8}>
+          <Grid item xs={12} md={7}>
+            {formsContent}
+          </Grid>
+          <Grid item container xs={12} md={5}>
+            <Grid item xs={12}>
+              <CostAnalyzer />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <PaymentButton type="submit">ΠΛΗΡΩΜΗ</PaymentButton>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={5}>
-          <div>TODO</div>
-        </Grid>
-      </Grid>
+      </form>
     </Container>
   );
 }

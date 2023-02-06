@@ -4,7 +4,7 @@ import { useBoundStore } from '../../store/store';
 /**
  * Hook that alerts clicks outside of the passed ref
  */
-function useOutsideAlerter(ref, setSelectedCard) {
+function useOutsideAlerter(ref, setSelectedCard, resetSelectedPeople) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -13,6 +13,7 @@ function useOutsideAlerter(ref, setSelectedCard) {
       if (ref.current && !ref.current.contains(event.target)) {
         // alert('You clicked outside of me!');
         setSelectedCard(null);
+        resetSelectedPeople();
       }
     }
     // Bind the event listener
@@ -29,8 +30,9 @@ function useOutsideAlerter(ref, setSelectedCard) {
  */
 export default function ClickedOutsideOfCard(props) {
   const setSelectedCard = useBoundStore(state => state.setSelectedCard);
+  const resetSelectedPeople = useBoundStore(state => state.resetSelectedPeople);
   const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, setSelectedCard);
+  useOutsideAlerter(wrapperRef, setSelectedCard, resetSelectedPeople);
 
   return <div ref={wrapperRef}>{props.children}</div>;
 }

@@ -38,6 +38,18 @@ export const BoxGap = styled(Box)(({ gap = '1px' }) => ({
   alignItems: 'center',
 }));
 
+export const BoxGapFlexStart = styled(Box)(({ gap = '1px' }) => ({
+  display: 'flex',
+  gap,
+  alignItems: 'flex-start',
+}));
+
+export const BoxGapJCFlexEnd = styled(Box)(({ gap = '1px' }) => ({
+  display: 'flex',
+  gap,
+  justifyContent: 'flex-end',
+}));
+
 //COLORS
 export const BlackLayer = styled(Box)({
   backgroundColor: 'rgba(0, 0, 0, 0.6)',
