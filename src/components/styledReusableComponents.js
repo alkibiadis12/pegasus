@@ -1,5 +1,6 @@
 import { styled } from '@mui/system';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
+import { colors } from './colors';
 
 //FLEX
 export const BoxFlexSB = styled(Box, {
@@ -59,4 +60,22 @@ export const BlackLayer = styled(Box)({
   width: '100%',
   height: '100%',
   zIndex: '10',
+});
+
+export const CustomTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 0,
+    '& fieldset': {
+      borderColor: colors.yellow,
+    },
+    '&:hover fieldset': {
+      borderColor: colors.yellow_light,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: colors.yellow,
+    },
+    '&.Mui-disabled fieldset': {
+      borderColor: colors.yellow,
+    },
+  },
 });

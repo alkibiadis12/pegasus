@@ -7,9 +7,19 @@ import Breadcrumb from '../components/Root/Breadcrumb';
 import { Outlet } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import CardInPage2 from '../components/Root/CardInPage2';
+import { useTranslateStore } from '../store/translateStore';
+import { useEffect } from 'react';
 
 function Root() {
   const location = useLocation();
+  const selectedLanguage = useTranslateStore(state => state.selectedLanguage);
+  const changeLanguage = useTranslateStore(state => state.changeLanguage);
+
+  //initialize language
+  useEffect(() => {
+    changeLanguage({ type: selectedLanguage });
+  }, []);
+
   return (
     <div>
       <CssBaseline />

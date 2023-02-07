@@ -7,6 +7,7 @@ import FinalPrice from './FinalPrice';
 import { Link } from 'react-router-dom';
 import { useBoundStore } from '../../store/store';
 import { Typography } from '@mui/material';
+import { useTranslateStore } from '../../store/translateStore';
 
 const NextStep = styled(Link)(({ totalpeople }) => ({
   textDecoration: 'none',
@@ -40,17 +41,21 @@ function PricingPopUp(props) {
 
   const totalpeople = adults + children + infants;
 
+  const { epiloghAtomwn, epomenoVhma } = useTranslateStore(
+    state => state.pricingPopUp
+  );
+
   return (
     <BoxFixed>
       <BoxFlexSB sx={{ padding: '20px 40px' }}>
-        <Typography variant="h5">Επιλογή Ατόμων</Typography>
+        <Typography variant="h5">{epiloghAtomwn}</Typography>
         <CounterPeople />
         <FinalPrice />
         <NextStep
           to={totalpeople > 0 ? '/stoixeia-epivatwn' : '#'}
           totalpeople={totalpeople}
         >
-          Επόμενο Βήμα
+          {epomenoVhma}
         </NextStep>
       </BoxFlexSB>
     </BoxFixed>

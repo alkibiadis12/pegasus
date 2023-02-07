@@ -4,9 +4,14 @@ import franceFlag from '../../assets/flags/fr.svg';
 import polandFlag from '../../assets/flags/pl.svg';
 import italianFlag from '../../assets/flags/it.svg';
 import { BoxCenter } from '../styledReusableComponents';
+import { useTranslateStore } from '../../store/translateStore';
+import { languageTypes } from '../../store/translateReducer/translateReducer';
 
 function Flags() {
-  const changeLanguageHandler = e => {};
+  const changeLanguage = useTranslateStore(state => state.changeLanguage);
+  const changeLanguageHandler = e => {
+    changeLanguage({ type: e.target.id });
+  };
   return (
     <BoxCenter gap="15px">
       <img
@@ -14,7 +19,7 @@ function Flags() {
         alt="Greek flag"
         width="30"
         onClick={changeLanguageHandler}
-        id="gr"
+        id={languageTypes.gr}
         style={{ cursor: 'pointer' }}
       />
       <img
@@ -22,7 +27,7 @@ function Flags() {
         alt="United Kingdom flag"
         width="30"
         onClick={changeLanguageHandler}
-        id="uk"
+        id={languageTypes.uk}
         style={{ cursor: 'pointer' }}
       />
       <img
@@ -30,7 +35,7 @@ function Flags() {
         alt="France flag"
         width="30"
         onClick={changeLanguageHandler}
-        id="fr"
+        id={languageTypes.fr}
         style={{ cursor: 'pointer' }}
       />
       <img
@@ -38,7 +43,7 @@ function Flags() {
         alt="Poland flag"
         width="30"
         onClick={changeLanguageHandler}
-        id="pl"
+        id={languageTypes.pl}
         style={{ cursor: 'pointer' }}
       />
       <img
@@ -46,7 +51,7 @@ function Flags() {
         alt="Italian flag"
         width="30"
         onClick={changeLanguageHandler}
-        id="it"
+        id={languageTypes.it}
         style={{ cursor: 'pointer' }}
       />
     </BoxCenter>

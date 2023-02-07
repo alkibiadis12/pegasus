@@ -6,12 +6,14 @@ import LoadingMessage from '../LoadingMessage';
 import dayjs from 'dayjs';
 import { BoxCenter } from '../styledReusableComponents';
 import { Typography } from '@mui/material';
+import { useTranslateStore } from '../../store/translateStore';
 
 export default function FinalPrice() {
   const selectedDate = useBoundStore(state => state.selectedDate);
   const selectedCard = useBoundStore(state => state.selectedCard);
   const selectedPeople = useBoundStore(state => state.selectedPeople);
   const setFinalPrice = useBoundStore(state => state.setFinalPrice);
+  const { telikhTimh } = useTranslateStore(state => state.pricingPopUp);
 
   const pushPassengers = (people, type) => {
     for (let i = 0; i < people; i++) {
@@ -49,7 +51,7 @@ export default function FinalPrice() {
   if (passengers.length === 0) {
     content = (
       <BoxCenter gap="5px" flexDirection="column">
-        <Typography variant="h6">Τελική Τιμή</Typography>
+        <Typography variant="h6">{telikhTimh}</Typography>
         <Typography variant="h6">€{'0.00'}</Typography>
       </BoxCenter>
     );
@@ -66,7 +68,7 @@ export default function FinalPrice() {
     setFinalPrice(Math.round((finalPrice * 100) / 100).toFixed(2));
     content = (
       <BoxCenter gap="5px" flexDirection="column">
-        <Typography variant="h6">Τελική Τιμή</Typography>
+        <Typography variant="h6">{telikhTimh}</Typography>
         <Typography variant="h6">
           €{Math.round((finalPrice * 100) / 100).toFixed(2)}
         </Typography>

@@ -25,6 +25,7 @@ const CustomCard = styled(Card, {
   position: 'relative',
   backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
+  cursor: `${differenceInMinutes < 1 ? 'auto' : 'pointer'}`,
   ': hover': {
     boxShadow: `${
       differenceInMinutes < 1

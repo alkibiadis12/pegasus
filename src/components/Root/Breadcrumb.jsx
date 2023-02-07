@@ -4,6 +4,7 @@ import { BoxCenter } from '../styledReusableComponents';
 import { styled } from '@mui/system';
 import { Typography } from '@mui/material';
 import { colors } from '../colors';
+import { useTranslateStore } from '../../store/translateStore';
 
 const LinkRouterCustom = styled(Link)(({ location, normalpath, to }) => ({
   textDecoration: 'none',
@@ -27,6 +28,8 @@ const LinkRouterCustom = styled(Link)(({ location, normalpath, to }) => ({
 }));
 
 function Breadcrumb() {
+  const { epilogiEkdromis, stoixeiaEpivatwn, ekdosiEisithriwn } =
+    useTranslateStore(state => state.breadcrumb);
   const { pathname: location } = useLocation();
   return (
     <BoxCenter
@@ -34,7 +37,7 @@ function Breadcrumb() {
       sx={{ backgroundColor: colors.dark_gray, padding: '10px 50px' }}
     >
       <LinkRouterCustom to={'/'} location={location} normalpath={'/'}>
-        <Typography variant="h6">Επιλογή Εκδρομής</Typography>
+        <Typography variant="h6">{epilogiEkdromis}</Typography>
       </LinkRouterCustom>
       <ChevronRightIcon sx={{ fontSize: '30px', color: colors.dark_gray2 }} />
       {/* to={'/stoixeia-epivatwn'} */}
@@ -43,7 +46,7 @@ function Breadcrumb() {
         location={location}
         normalpath={'/stoixeia-epivatwn'}
       >
-        <Typography variant="h6">Στοιχεία Επιβατών</Typography>
+        <Typography variant="h6">{stoixeiaEpivatwn}</Typography>
       </LinkRouterCustom>
       <ChevronRightIcon sx={{ fontSize: '30px', color: colors.dark_gray2 }} />
       {/* to={'/ekdosh-eisithriwn'} */}
@@ -52,7 +55,7 @@ function Breadcrumb() {
         location={location}
         normalpath={'/ekdosh-eisithriwn'}
       >
-        <Typography variant="h6">Έκδοση Εισιτηρίων</Typography>
+        <Typography variant="h6">{ekdosiEisithriwn}</Typography>
       </LinkRouterCustom>
     </BoxCenter>
   );

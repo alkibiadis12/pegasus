@@ -4,6 +4,7 @@ import { styled } from '@mui/system';
 import { useBoundStore } from '../../store/store';
 import { BlackLayer, BoxGapJCFlexEnd } from '../styledReusableComponents';
 import { colors } from '../colors';
+import { useTranslateStore } from '../../store/translateStore';
 
 const CardCustom = styled(Box)(({ image }) => ({
   height: '120px',
@@ -20,6 +21,8 @@ const TypographyZindex = styled(Typography)(({ color = '#fff' }) => ({
 
 function CardInPage2() {
   const selectedCard = useBoundStore(state => state.selectedCard);
+  const { apo, hmeromhniaEkdromis, wraAnaxwrhshs, monohmerh, plhrofories } =
+    useTranslateStore(state => state.cardsWithRoutes);
 
   return (
     <CardCustom image={selectedCard?.image}>
@@ -27,32 +30,37 @@ function CardInPage2() {
         <Grid container sx={{ padding: '10px 20px' }} rowGap={1}>
           <Grid item xs={9}>
             <TypographyZindex variant="h6">
-              {selectedCard?.descr} ΑΠΟ {selectedCard?.selectedPort.gr}
+              {selectedCard?.descr} {apo} {selectedCard?.selectedPort.gr}
             </TypographyZindex>
           </Grid>
           <Grid item xs={3}>
             <BoxGapJCFlexEnd>
-              <TypographyZindex variant="body1">
-                Μονοήμερη Κρουαζιέρα
-              </TypographyZindex>
+              <TypographyZindex variant="body1">{monohmerh}</TypographyZindex>
             </BoxGapJCFlexEnd>
           </Grid>
           <Grid item xs={12}>
             <TypographyZindex variant="h6">
-              Ημερομηνία Εκδρομής: {selectedCard?.departureDate}
+              {hmeromhniaEkdromis}: {selectedCard?.departureDate}
             </TypographyZindex>
           </Grid>
           <Grid item xs={9}>
             <TypographyZindex variant="h6">
-              Ώρα Αναχώρησης: {selectedCard.departureTime} -{' '}
+              {wraAnaxwrhshs}: {selectedCard.departureTime} -{' '}
               {selectedCard.arrivalTime}
             </TypographyZindex>
           </Grid>
           <Grid item xs={3}>
             <BoxGapJCFlexEnd>
               <TypographyZindex variant="body1">
-                <Link href={selectedCard.url} sx={{ color: colors.yellow }}>
-                  Πληροφορίες
+                <Link
+                  href={selectedCard.url}
+                  sx={{
+                    color: colors.yellow,
+                    textDecoration: 'none',
+                    ':hover': { textDecoration: 'underline' },
+                  }}
+                >
+                  {plhrofories}
                 </Link>
               </TypographyZindex>
             </BoxGapJCFlexEnd>

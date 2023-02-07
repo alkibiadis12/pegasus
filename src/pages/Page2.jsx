@@ -24,6 +24,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { colors } from '../components/colors';
 import { styled } from '@mui/system';
 import CostAnalyzer from '../components/Page2/CostAnalyzer';
+import { BoxCenter } from '../components/styledReusableComponents';
 
 const PaymentButton = styled(Button)({
   padding: '10px 50px',
@@ -55,6 +56,9 @@ export default function Page2() {
     state => state.setSelectedUsersInformation
   );
 
+  const { stoixeiaEpivatwn, epivatis } = useTranslateStore(
+    state => state.page2
+  );
   const selectedLanguage = useTranslateStore(state => state.selectedLanguage);
   //GETTING COUNTRIES DATA
   const countries = useQuery(['countries'], getCountries);
@@ -137,6 +141,15 @@ export default function Page2() {
               key={`field${index}`}
               sx={{ marginBottom: '30px' }}
             >
+              <Grid item xs={12}>
+                <BoxCenter sx={{ marginBottom: '10px' }}>
+                  <Typography variant="body2">
+                    {index === 0
+                      ? `Leader ${epivatis}`
+                      : `${epivatis} ${index}`}
+                  </Typography>
+                </BoxCenter>
+              </Grid>
               <Grid item xs={6}>
                 <TextField
                   id="outlined-required"
@@ -252,22 +265,19 @@ export default function Page2() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={1} columnSpacing={8}>
           <Grid item xs={12} md={7}>
+            <BoxCenter sx={{ marginBottom: '30px' }}>
+              <Typography variant="h4">{stoixeiaEpivatwn}</Typography>
+            </BoxCenter>
             {formsContent}
           </Grid>
-          <Grid item container xs={12} md={5}>
+          <Grid item container xs={12} md={5} sx={{ marginTop: '70px' }}>
             <Grid item xs={12}>
               <CostAnalyzer />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <PaymentButton type="submit">ΠΛΗΡΩΜΗ</PaymentButton>
+            <Grid item xs={12}>
+              <BoxCenter>
+                <PaymentButton type="submit">ΠΛΗΡΩΜΗ</PaymentButton>
+              </BoxCenter>
             </Grid>
           </Grid>
         </Grid>

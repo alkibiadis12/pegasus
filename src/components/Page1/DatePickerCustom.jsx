@@ -4,10 +4,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import dayjs from 'dayjs';
 import { useBoundStore } from '../../store/store';
+import { useTranslateStore } from '../../store/translateStore';
+import { CustomTextField } from '../styledReusableComponents';
 
 function DatePickerCustom({ disabled }) {
   const selectedDate = useBoundStore(state => state.selectedDate);
   const setSelectedDate = useBoundStore(state => state.setSelectedDate);
+  const { epiloghHmeromhnias } = useTranslateStore(state => state.menus);
   const handleChange = newValue => {
     setSelectedDate(newValue);
   };
@@ -17,11 +20,19 @@ function DatePickerCustom({ disabled }) {
       <DesktopDatePicker
         minDate={dayjs(new Date())}
         disabled={disabled}
-        label="Επιλογή Ημερομηνίας"
+        label={epiloghHmeromhnias}
         inputFormat="DD/MM/YYYY"
         value={selectedDate}
         onChange={handleChange}
-        renderInput={params => <TextField {...params} sx={{ width: 400 }} />}
+        renderInput={params => (
+          <CustomTextField
+            {...params}
+            sx={{ width: 400 }}
+            InputLabelProps={{
+              style: { color: '#000' },
+            }}
+          />
+        )}
       />
     </LocalizationProvider>
   );
